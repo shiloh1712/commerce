@@ -1,0 +1,73 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Listing: {{listing.title}}</h2>
+    {% if lister == user and not winner %}
+        <form action="{% url 'settle' listing.id %}" method="GET">
+            {% csrf_token %}
+            <input type="submit" name="" id="" value="{{close_msg}}">
+        </form>
+    {% endif %}
+
+    {% if not winner and user.is_authenticated %}
+        <form action="{% url 'follow' listing.id %}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="{{watchlist_msg}}">
+        </form>
+    {% endif %}
+
+    <img src={{listing.url}} alt="some pic of listing">
+
+    <p>{{listing.desc}}</p>
+
+    {% if winner %}
+        {% if winner == user %}
+            <strong>YOU WON THIS AUCTION FOR </strong>
+        {% else %}
+            <strong>SOLD FOR </strong>
+        {% endif %}
+    {% endif %}
+    <strong>${{price}}</strong>
+    
+    {% if listing.active %}
+        <div>{{ bid_count }} bid(s) so far.
+            {% if max_bid.user == user %}
+                <span> Your bid is the current bid</span>
+            </div>
+            {% endif %}
+        <div>
+    {% endif %}
+
+    {% if user.is_authenticated and listing.active %}
+        <form action="{% url 'bid' listing.id %}" method="POST">
+            {% csrf_token %}
+            <input type="number" name="bid_price" id="" min="{{valid_bid}}" step="0.01" required="">
+            <input type="submit">
+        </form>
+    {% endif %}
+
+    <h2>Comments</h2>
+    {% if user.is_authenticated %}
+        <form action="{% url 'comment' listing.id %}" method="POST">
+            {% csrf_token %}
+            <input type="text" name="comment">
+        </form>
+    {% endif %}
+
+    <ul>
+        {% for comment in comments %}
+            <li>{{comment}}</li>
+        {% endfor %}
+    </ul>
+
+        <h2>Details:</h2>
+        <ul>
+            <li>Listed by: {{listing.lister.username}}</li>
+            <li>Category:</li>
+            {% for cat in categories %}
+                <a href="{% url  'category' cat.category %}">{{cat}}</a>
+                <b>, </b>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

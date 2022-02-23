@@ -1,0 +1,22 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>{{heading}}</h2>
+    <ul>
+        {% for listing in listings %}
+            <a href="{% url 'listing' listing.id %}">
+                <img style="max-width: 25%;" src="{{listing.url}}" alt="some pic">
+                <span>{{listing.title}}</span>
+                <p>Price: ${{listing.price}}</p>
+                <p>Created {{listing.created_at}}</p>
+            </a>
+        {% empty %}
+            <li>No active listing</li>
+        {% endfor %}
+    </ul>
+    TODO
+    <ul>
+        <li>    category: preselect or add new categories        </li>
+        <li>close auction: no bid</li>
+    </ul>
+{% endblock %}
